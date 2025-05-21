@@ -1,3 +1,4 @@
+import sys
 from flask import Flask, request
 from flask_restful import Resource, Api, reqparse, fields, marshal_with, abort
 from flask_sqlalchemy import SQLAlchemy
@@ -25,17 +26,26 @@ userFields = {
 @marshal_with(userFields)
 def user_route():
     name = request.args.get('name', type = str)
+    delete = request.args.get('delete', type = str)
     if name:
-        pubKey = request.args.get('pubKey', type = str)
+        pubKey = request.args.get('pubkey', type = str)
         if pubKey:
             user = UserModel(name=name, pubKey=pubKey)
             db.session.add(user)
             db.session.commit()
-            users = user
+            users = UserModel.query.all()
         else:
             users = UserModel.query.filter_by(name=name).first()
             if not users:
                 abort(404)
+    elif delete:
+        user = UserModel.query.filter_by(name=delete).first()
+        if user:
+            db.session.delete(user)
+            db.session.commit()
+        else:
+            abort(404)
+        users = UserModel.query.all()
     else:
         users = UserModel.query.all()
 
@@ -43,7 +53,7 @@ def user_route():
 
 @app.route('/')
 def home():
-    return '<h1> Database access: /api/user?name=&ltname&gt[&pubKey=&ltpubKey&gt]</h1>'
+    return '<h1> Usage: &ltURL&gt/api/pubkey?{name|delete}=&ltname&gt[&pubkey=&ltpubkey&gt]</h1>'
 
 if __name__ == "__main__":
     app.run(debug=True)
