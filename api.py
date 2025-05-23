@@ -71,7 +71,12 @@ def home():
     """
 
 if __name__ == "__main__":
-    app.run(debug=True)
-#    app.run(host='0.0.0.0', port=80, debug=True)
+
+    print(sys.argv.count)
+
+    if len(sys.argv) > 1 and sys.argv[1] == "prod":
+        app.run(host='0.0.0.0', port=80, debug=True)
+    else:
+        app.run(debug=True)
     
 
