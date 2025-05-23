@@ -25,7 +25,7 @@ userFields = {
 @app.route('/api/db')
 @marshal_with(userFields)
 def user_route1():
-    name = request.args.get('name', type = str)
+    name = request.args.get('user', type = str)
     delete = request.args.get('delete', type = str)
     if name:
         pubKey = request.args.get('pubkey', type = str)
@@ -54,7 +54,7 @@ def user_route1():
 @app.route('/api/pubkey')
 def user_route2():
     pubKeys = ""
-    name = request.args.get('name', type = str)
+    name = request.args.get('user', type = str)
     if name:
         users = UserModel.query.filter_by(name=name).first()
         if users:
@@ -66,8 +66,8 @@ def user_route2():
 def home():
     return """
     <h1> Usage:</h1>
-    <h1> &ltURL&gt/api/db?{name|delete}=&ltname&gt[&pubkey=&ltpubkey&gt]</h1>
-    <h1> &ltURL&gt/api/pubkey?name=&ltname&gt</h1>
+    <h1> &ltURL&gt/api/db?{user|delete}=&ltname&gt[&pubkey=&ltpubkey&gt]</h1>
+    <h1> &ltURL&gt/api/pubkey?user=&ltname&gt</h1>
     """
 
 if __name__ == "__main__":
