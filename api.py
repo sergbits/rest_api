@@ -53,13 +53,18 @@ def user_route1():
 
 @app.route('/api/pubkey')
 def user_route2():
-    pubKeys = ""
+    ret = ""
+
+    for key, value in request.args.items():
+        ret += '# {0}={1}<br/>'.format(key, value)
+
     name = request.args.get('user', type = str)
     if name:
         users = UserModel.query.filter_by(name=name).first()
         if users:
-            pubKeys = users.pubKey
-    return pubKeys, 200
+            ret += users.pubKey
+
+    return ret, 200
 
 
 @app.route('/')
